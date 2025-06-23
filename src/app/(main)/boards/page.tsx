@@ -2,17 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"; // shadcn 카드 컴포넌트
-import {redirect} from "next/navigation"
+import {redirect, useRouter} from "next/navigation"
 import { Textarea } from "@/components/ui/textarea"
-import { Album } from "@/types/api/album";
-import {CardFooter} from "react-bootstrap";
-import {Button} from "@/components/ui/button";
-import {router} from "next/client";
 
 export default function BoardItemClient() {
+    const router = useRouter();
+
     const [myBoard, setMyBoard] = useState([]);
 
-    const [editText, setEditText] = useState("");
     const [editingKey, setEditingKey] = useState("");
 
     const [newText, setNewText] = useState("");
@@ -21,11 +18,9 @@ export default function BoardItemClient() {
 
     const [newFlag, setNewFlag] = useState(false);
 
-    const [isPop, setIsPop] = useState(false);
+    // const [show, setShow] = useState(false);
 
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
+    // const handleClose = () => setShow(false);
 
 
     function goChangeFlag() {
@@ -63,7 +58,12 @@ export default function BoardItemClient() {
             setNewFlag(false);
 
         }
-        return redirect("http://localhost:3000/boards");
+
+        // redirect("/boards");
+        router.push("/boards/");
+        window.location.reload();
+
+        // return redirect("http://localhost:3000/boards");
     }
 
 
@@ -82,64 +82,14 @@ export default function BoardItemClient() {
 
     function goViewBoard(boardId: any) {
         setEditingKey(boardId)
-        // setEditText(myText);
-        // router.push(`/boards/${boardId}`);
         return redirect("/boards/" + boardId);
-        // setIsPop(true);
-        // setShow(true);
-    }
-
-
-    function onUpdate(boardId:any, editText: string) {
-        const alertGo = confirm("수정 하시겟습니까?");
-
-        if(alertGo){
-            (async () => {
-                await fetch(`http://localhost:3001/boards/${boardId}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-
-                    body: JSON.stringify({
-                        content: editText
-                    })
-                });
-            })();
-
-            setEditingKey("");
-            redirect("/boards");
-        }
-    }
-
-    function onDelete(boardId:any) {
-        console.log(boardId);
-        const alertGo = confirm("Are you sure Delete?");
-
-        if(alertGo){
-            (async () => {
-                await fetch(`http://localhost:3001/boards/${boardId}`, {
-                    method: 'Delete',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-            })();
-
-            setNewText("");
-            setNewTitle("");
-            setNewFlag(false);
-            setEditingKey("");
-            redirect("/boards");
-        }
-
     }
 
     return (
         <div className="container mx-auto text-center p-5 mt-8">
             <div className="text-6xl text-green-500 font-bold mb-8">게시판</div>
             <div className="">
-                {newFlag === true ? (
+                {newFlag ? (
                     <div>
                         <div className="flex justify-end">
                             <h5 className="cursor-pointer border-2 border-gray-400 rounded-xl p-2 mb-4" onClick={() =>(goChangeFlag())}>취소</h5>

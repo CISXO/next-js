@@ -10,17 +10,19 @@ import {fetchBoard, fetchComments} from "@/services/post-service";
 import { useUser } from "@/components/islogin/UserContext";
 import {Board} from "@/types/api/board";
 import {myComment} from "@/types/api/comment";
+import {useRouter} from "next/navigation";
 
 export interface boardDetailPage {
-    params: {
+    params: Promise<{
         boardsId: string;
-    };
+    }>;
 }
-
 //interface는 타입 재정의가 가능함// interface 권장하기 때문
 
 // {} props 자체로 받는 것은 Promise 객체이다.
 export default function PostDetailPage({ params }: boardDetailPage) {
+
+    const router = useRouter();
 
     const [editingKey, setEditingKey] = useState("");
 
@@ -37,9 +39,10 @@ export default function PostDetailPage({ params }: boardDetailPage) {
 
     useEffect(() => {
         (async () => {
-            const boardId = params.boardsId;
-            const myBoard:Board = await fetchBoard(boardId);
-            const myComment:myComment[] = await fetchComments(boardId);
+            const board = await params;
+            console.log(board);
+            const myBoard:Board = await fetchBoard(board.boardsId);
+            const myComment:myComment[] = await fetchComments(board.boardsId);
             setBoardInfo(myBoard);
 
             setEditText(myBoard.content)
@@ -49,6 +52,9 @@ export default function PostDetailPage({ params }: boardDetailPage) {
 
 
     }, []);
+    useEffect(() => {
+
+    }, [editComment]);
 
 
 
@@ -70,6 +76,8 @@ export default function PostDetailPage({ params }: boardDetailPage) {
 
             setEditingKey("");
             redirect("/boards");
+            window.location.reload();
+
         }
     }
 
@@ -88,6 +96,7 @@ export default function PostDetailPage({ params }: boardDetailPage) {
             })();
 
             setEditingKey("");
+
             redirect("/boards");
         }
 
@@ -113,7 +122,12 @@ export default function PostDetailPage({ params }: boardDetailPage) {
             setEditingKey("");
             setEditComment("");
             setEditText("");
-            redirect(`/boards/${_id}`);
+            // redirect(`/boards/${_id}`);
+
+            router.push(`/boards/${_id}`);
+
+            window.location.reload();
+
         }
 
     }
