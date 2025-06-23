@@ -2,7 +2,7 @@
 
 
 import {Album} from "@/types/api/album";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 
 export default function PostItem({album}: { album: Album }) {

@@ -2,7 +2,6 @@
 
 import { fetchAlbum } from "@/services/post-service";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {Album} from "@/types/api/album";
 
@@ -27,7 +26,7 @@ export default function AlbumItemClient({ params }: AlbumItemClientProps) {
                 setAlbum(data);
             });
         })();
-    }, []);
+    }, [album]);
 
 
     function changeButton() {
@@ -52,4 +51,14 @@ export default function AlbumItemClient({ params }: AlbumItemClientProps) {
             )}
         </div>
     );
+}
+
+export async function generateStaticParams() {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/albums`);
+    const data = await response.json();
+    return data.map((album: Album) => {
+        return {
+            albumId: album.id.toString(),
+        }
+    })
 }

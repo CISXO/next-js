@@ -1,5 +1,5 @@
 
-// /app/blog/[slug]/page.tsx
+// /app/blog/[slug]/page.back.tsx
 // => /blog/:prameter와 같음
 
 export default function BlogDetailPage() {
@@ -8,4 +8,12 @@ export default function BlogDetailPage() {
             <h1 className="text-4xl font-bold">BlogDetailPage</h1>
         </div>
     )
+}
+
+export function generateStaticParams() {
+    return [
+        {
+        slug: "1",
+        },
+    ];
 }

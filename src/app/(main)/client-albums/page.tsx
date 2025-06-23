@@ -1,5 +1,4 @@
 
-import {fetchPosts} from "@/services/post-service";
 
 import AlbumList from "@/components/blocks/albumList";
 
